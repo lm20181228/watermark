@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片添加水印</title>
+</head>
+
+<body></body>
+
+</html>
+<script>
+    // 渲染画布
+    function Watermark(canvas,option) {
+        this.title = "默认水印";//水印内容
+        this.rotate = 0;//倾斜角度
+        this.color = 'rgba(250,250,250,1)';//水印颜色
+        this.size = '20';//水印大小
+        this.transparent = 1;//透明度
+        this.loop = false;//是否循环
+        this.mode = 'rightB';//水印排布模式
+        this.modeList = {
+            'leftT': {
+                top:this.size,
+                left:"10",
+                textAlign:"left"
+            },
+            'rightT': {
+                top:this.size,
+                left:width-10,
+                textAlign:"end"
+            },
+            'rightB': {
+                top:height-this.size,
+                left:width-10,
+                textAlign:"end"
+            },
+            'leftB': {
+                top:height-this.size,
+                left:"10",
+                textAlign:"left"
+            },
+        };// 排布模式组合
+        option && this.getOption(option);
+        this.text(canvas)
+    }
+    // 用于解析传递进来的参数
+    Watermark.prototype.getOption = function (option){
+        let _this = this;
+        for(item in option){
+            _this[item] = option[item];
+        }
+        return _this;
+    }
+    // 开始绘制文字
+    Watermark.prototype.text = function(canvas){
+        let cxt = canvas.getContext('2d');
+        // 设置字体样式
+        cxt.font=`${this.size}px Georgia`;
+        // 设置颜色 和 设置透明度
+        cxt.fillStyle = this.color;
+        // 设置旋转角度
+        cxt.rotate(-this.rotate/180);
+        // 填充文案
+        textPosition = this.modeList[this.mode];
+        cxt.textAlign = textPosition.textAlign;
+        cxt.fillText(this.title,textPosition.left,textPosition.top);
+        cxt.save();
+        this.imageUrl()
+    }
+    // 获取图片路径
+    Watermark.prototype.imageUrl = function(){
+        let dataURL = canvasC.toDataURL('image/png');
+        // this.getBase64(dataURL);
+    }
+    Watermark.prototype.getBase64 = function(base64) {
+      var changebase64 = base64.replace(/[\r\n]/g, "");
+    //   console.log(changebase64,"asfasfasfasfg");
+      return changebase64;
+    }
+    // 渲染图片
+    let width=0,height=0;
+    let canvasC =null;
+    function init(contentId) {
+        // 水印属性
+        let option  = {
+            title:"自添加水印",
+            color:'rgba(250,250,250,0.7)',
+            size:15,
+        }
+        var img = new Image();
+        // img.src = "./images/bg.png";
+        img.src = "https://dayuding.wisesoft.net.cn/group1/M00/01/64/rBAJQmNItheAQysPAACDqZbizxI71_184x184.jpeg";
+        img.setAttribute("crossOrigin",'Anonymous')
+        img.onload = function (e) {
+            width = e.path[0].naturalWidth;
+            height = e.path[0].naturalHeight;
+            // 动态创建一个canvas
+            canvasC = document.createElement("canvas");
+            // 获取原画的长宽属性
+            canvasC.width = width;
+            canvasC.height = height;
+            document.getElementsByTagName('body')[0].appendChild(canvasC)
+            let cxt = canvasC.getContext('2d');
+            cxt.drawImage(img, 0, 0);
+            // 水印属性添加。
+            let watermark = new Watermark(canvasC,option);
+        }
+    }
+    init()
+</script>
