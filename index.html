@@ -24,16 +24,25 @@
         <span>待处理图片：</span><input type="file" name="fileUpload" id="fileUpload" onchange="changeFile(this)" accept="image/"><br>
         <!-- 动态输入水印文字 -->
         <span>输入水印文字：</span><input name="title" type="text" maxlength="10" placeholder="输入水印文字"><br>
-        <span>输入文字大小：</span><input name="size" type="number" min="10" max="50" placeholder="输入水印文字大小"><br>
+        <span>输入文字大小：</span><input name="size" type="number" min="10" max="50" placeholder="输入文字大小"><br>
         <!-- 颜色选择 -->
+        <span>选择字体颜色：</span><input name="color" type="text" min="15" max="50" placeholder="输入文字颜色"><br>
+        <span>选择字体透明度：</span><input name="transparent" type="number" min="0.1" max="1" placeholder="输入范围0.1~1"><br>
+        <span>选择水印旋转度：</span><input name="rotate" type="number" min="0" max="360" placeholder="输入旋转角度"><br>
         <!-- 模式选择 -->
         <span>选择水印模式：</span>
-        <select name="mode" id="watermarkSelect">
+        <select name="mode">
             <option value="">请选择水印模式</option>
             <option value="leftT">左上</option>
             <option value="rightT">右上</option>
             <option value="rightB">右下</option>
-            <option value="leftB">右下</option>
+            <option value="leftB">左下</option>
+        </select><br>
+        <span>水印是否铺满：</span>
+        <select name="overspread">
+            <option value="">水印是否铺满：</option>
+            <option value='1'>是</option>
+            <option value='0'>否</option>
         </select><br>
         <!-- 提交按钮 -->
         <button onclick="setWatermark('toolForm')" type="button">保存设置</button>

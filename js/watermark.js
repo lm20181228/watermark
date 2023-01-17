@@ -5,8 +5,8 @@ function Watermark(canvas,option) {
     this.color = 'rgba(250,250,250,1)';//水印颜色
     this.size = '20';//水印大小
     this.transparent = 1;//透明度
-    this.loop = false;//是否循环
     this.mode = 'rightB';//水印排布模式
+    this.overspread = '0';//是否循环铺满
     option && this.getOption(option);
     this.modeList = {
         'leftT': {
@@ -47,12 +47,33 @@ Watermark.prototype.text = function(canvas){
     cxt.font=`${this.size}px Georgia`;
     // 设置颜色 和 设置透明度
     cxt.fillStyle = this.color;
+    cxt.globalAlpha  = this.transparent;
     // 设置旋转角度
     cxt.rotate(-this.rotate/180);
     // 填充文案
     textPosition = this.modeList[this.mode];
-    cxt.textAlign = textPosition.textAlign;
-    cxt.fillText(this.title,textPosition.left,textPosition.top);
+    // 是否开启循环铺满
+    if(this.overspread == 1){
+        let orgTitle = this.title+'    ';
+        let textHeight = -(-20 - this.size);//定义一个文字的高度
+        // 获取文字长度，然后先每排铺满
+        let textNum = Math.ceil(width/cxt.measureText(orgTitle).width)*2;
+        let heightNum = Math.ceil(height/textHeight);
+        this.title = new Array(textNum).join(orgTitle);
+        let leftF = 0,rightF = 0;
+        if(this.rotate>0){
+            leftF = height*Math.sin(this.rotate/180)
+        }else{
+            rightF = cxt.measureText(this.title).width*Math.sin(this.rotate/180)
+        }
+        // 开始循环
+        for(let i=0;i<heightNum*3;i++){
+            cxt.fillText(this.title,-leftF,i*textHeight+rightF);
+        }
+    }else{
+        cxt.textAlign = textPosition.textAlign;
+        cxt.fillText(this.title,textPosition.left,textPosition.top);
+    }
     cxt.save();
     this.imageUrl()
 }
